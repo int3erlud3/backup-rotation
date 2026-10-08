@@ -1,0 +1,17 @@
+[Unit]
+Description=Backup /etc and /srv with GFS rotation
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/backup-rotation -s /etc -s /srv -d /var/backups/rotation -l /var/log/backup-rotation.log -e '*.tmp'
+Nice=10
+IOSchedulingClass=idle
+# Hardening: the job only needs to read sources and write to the backup dir.
+ProtectSystem=strict
+ReadWritePaths=/var/backups/rotation /var/log
+ProtectHome=read-only
+PrivateTmp=true
+NoNewPrivileges=true
+CapabilityBoundingSet=CAP_DAC_READ_SEARCH
