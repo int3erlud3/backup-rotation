@@ -1,0 +1,7 @@
+*.log
+*.partial
+/tmp/
+.vscode/
+.idea/
+*.swp
+.DS_Store
