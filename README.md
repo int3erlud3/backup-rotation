@@ -1,6 +1,6 @@
 # backup-rotation
 
-[![CI](https://github.com/OWNER/backup-rotation/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/backup-rotation/actions/workflows/ci.yml)
+[![CI](https://github.com/int3erlud3/backup-rotation/actions/workflows/ci.yml/badge.svg)](https://github.com/int3erlud3/backup-rotation/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A small, auditable Bash backup tool with **Grandfather-Father-Son (GFS)** retention.
@@ -27,7 +27,7 @@ Bash ≥ 4.4, GNU coreutils/findutils, GNU tar, `flock` (util-linux); `rsync` fo
 ## Installation
 
 ```bash
-git clone https://github.com/OWNER/backup-rotation.git
+git clone https://github.com/int3erlud3/backup-rotation.git
 sudo install -m 0755 backup-rotation/bin/backup-rotation /usr/local/bin/
 sudo install -d -m 0700 /var/backups/rotation
 ```
