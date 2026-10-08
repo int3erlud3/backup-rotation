@@ -3,6 +3,21 @@
 [![CI](https://github.com/int3erlud3/backup-rotation/actions/workflows/ci.yml/badge.svg)](https://github.com/int3erlud3/backup-rotation/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+```text
+   _             _                         _        _   _
+  | |__  __ _ __| |___  _ _ __ ___ _ _ ___| |_ __ _| |_(_)___ _ _
+  | '_ \/ _` / _| / / || | '_ \___| '_/ _ \  _/ _` |  _| / _ \ ' \
+  |_.__/\__,_\__|_\_\\_,_| .__/   |_| \___/\__\__,_|\__|_\___/_||_|
+                         |_|
+
++====================================================================+
+|  BACKUP ROTATION  ::  GFS Backup & Retention Manager               |
++--------------------------------------------------------------------+
+|  Verified tar/rsync backups with daily/weekly/monthly retention    |
+|  v1.0.0  -  Bastion Ops Toolkit  -  by int3erlud3                  |
++====================================================================+
+```
+
 A small, auditable Bash backup tool with **Grandfather-Father-Son (GFS)** retention.
 It creates `tar.gz` archives or `rsync` hard-link snapshots, writes SHA-256
 checksums, supports a dry-run mode, prevents overlapping runs with a lock file and
@@ -82,6 +97,14 @@ sudo tar -xzf backup-daily-20261007-023000.tar.gz -C /restore-target
 | `-n, --dry-run` | off | Print commands instead of running them |
 | `-l, --log-file FILE` | – | Append log lines to FILE |
 | `--lock-file FILE` | `DEST/.backup-rotation.lock` | Lock file location |
+
+## Startup banner
+
+Part of the **Bastion Ops Toolkit**. When run interactively, `backup-rotation` prints the
+banner shown above to **stderr** – only if stderr is a terminal. Pipes,
+cron jobs, systemd units and monitoring agents see exactly the same output and exit
+codes as before. Disable it with `--no-banner` or `NO_BANNER=1`; `--help` and
+`--version` show it on a terminal too.
 
 ## Development
 

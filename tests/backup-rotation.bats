@@ -126,3 +126,56 @@ backup_on() { BACKUP_DATE="$1" run "$BR" -s "$SRC" -d "$DEST" "${@:2}"; }
   [ "$status" -eq 0 ]
   [ ! -e "$BATS_TEST_TMPDIR/pwned" ]
 }
+
+# ---- banner -----------------------------------------------------------------
+# script(1) runs the command on a pseudo-terminal, so stdout/stderr are a TTY.
+on_tty() {
+  command -v script >/dev/null || skip "script(1) not available"
+  run script -qefc "$(printf '%q ' "$@")" /dev/null </dev/null
+}
+
+@test "banner is printed on an interactive terminal" {
+  on_tty env BACKUP_DATE=2026-10-06 "$BR" -s "$SRC" -d "$DEST"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Bastion Ops Toolkit"* ]]
+  [[ "$output" == *"BACKUP ROTATION"* ]]
+  ls "$DEST"/daily/backup-daily-20261006-*.tar.gz
+}
+
+@test "banner is not printed when stderr is not a terminal (cron/systemd)" {
+  backup_on 2026-10-06
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Bastion Ops Toolkit"* ]]
+}
+
+@test "--no-banner and NO_BANNER=1 suppress the banner on a terminal" {
+  on_tty "$BR" --no-banner -d "$DEST" --verify
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Bastion Ops Toolkit"* ]]
+  on_tty env NO_BANNER=1 "$BR" -d "$DEST" --verify
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Bastion Ops Toolkit"* ]]
+}
+
+@test "--help shows the banner on a terminal only" {
+  on_tty "$BR" --help
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Bastion Ops Toolkit"* ]]
+  run "$BR" --help
+  [[ "$output" != *"Bastion Ops Toolkit"* ]]
+  [[ "$output" == Usage:* ]]
+}
+
+@test "failure exit codes are unchanged on a terminal" {
+  on_tty "$BR" -d /nonexistent --verify
+  [ "$status" -eq 1 ]
+}
+
+@test "README banner matches the runtime banner" {
+  on_tty "$BR" --version
+  # first ```text block of the README
+  expected=$(awk -v fence='```' '$0 == fence "text" { on = 1; next } on && $0 == fence { exit } on' "$BATS_TEST_DIRNAME/../README.md")
+  actual=$(printf '%s\n' "$output" | tr -d '\r')
+  [ -n "$expected" ]
+  [[ "$actual" == "$expected"* ]]
+}
